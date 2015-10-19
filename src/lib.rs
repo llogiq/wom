@@ -25,6 +25,26 @@ impl<T> Wom<T> {
     }
 }
 
+/// Run a function over a write-only wrapped value
+///
+/// # Examples
+///
+/// ```
+///# use wom::with_wom;
+/// let mut x = 1u32;
+/// let mut y : u32 = with_wom(x, |ref mut w| ***w = 2u32);
+/// assert_eq!(2, y);
+/// ```
+pub fn with_wom<F, T: Sized>(t: T, f: F) -> T
+where F: FnOnce(&mut Wom<T>) {
+    let mut w : Wom<T> = wom(t);
+    {
+        let wref = &mut w;
+        f(wref);
+    }
+    w.into_inner()
+}
+
 /// Create a Wom handle on our `T`.
 pub fn wom<T>(t: T) -> Wom<T> {
     Wom { _inner: t }
