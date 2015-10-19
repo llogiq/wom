@@ -1,0 +1,11 @@
+[package]
+name = "wom"
+version = "0.0.1"
+authors = ["Andre Bogus <bogusandre@gmail.com>"]
+description = "Write Only Memory"
+repository = "https://github.com/llogiq/wom"
+readme = "README.md"
+license = "MIT"
+
+[lib]
+name = "wom"

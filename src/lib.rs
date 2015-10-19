@@ -2,6 +2,7 @@
 //!
 //! This is a wrapper type to disallow reading from the wrapped type
 
+use std::ops::{Deref, DerefMut};
 use std::convert::{AsRef, AsMut};
 
 /// Make `T` Write-Only
@@ -39,6 +40,37 @@ impl<T: Sized> AsRef<T> for Wom<T> {
     /// ```
     fn as_ref(&self) -> &T {
         panic!("readably referencing write-only memory");
+    }
+}
+
+impl<T: Sized> Deref for Wom<T> {
+    type Target = T;
+    
+    /// Getting an immutable value out should panic.
+    /// # Examples
+    ///
+    /// ```should_panic
+    ///# use wom::wom;
+    /// *wom(1u32);
+    /// ```
+    fn deref(&self) -> &T {
+        panic!("readably referencing write-only memory");
+    }
+}
+
+impl<T: Sized> DerefMut for Wom<T> {
+    /// Dereference into the inner value
+    ///
+    /// # Examples
+    ///
+    /// ```
+    ///# use wom::wom;
+    /// let mut w = wom(1u32);
+    /// *w = 2u32;
+    /// assert_eq!(2, w.into_inner());
+    /// ```
+    fn deref_mut(&mut self) -> &mut T {
+        return &mut self._inner;
     }
 }
 
